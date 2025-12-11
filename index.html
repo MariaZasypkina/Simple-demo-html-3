@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Prism Lab — Creative Coding Cards</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Modern sans + display -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;500;700&family=Syne:wght@600;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg-dark: #040013;
+        --bg-card: rgba(9, 9, 26, 0.95);
+        --accent-1: #ff6fd8;
+        --accent-2: #3813c2;
+        --accent-3: #00f5a0;
+        --text-main: #ffffff;
+        --text-muted: #a7a7c6;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        font-family: "Manrope", system-ui, -apple-system, BlinkMacSystemFont,
+          sans-serif;
+        background: radial-gradient(
+          circle at top,
+          #3516b3 0,
+          #040013 45%,
+          #000 100%
+        );
+        color: var(--text-main);
+        overflow: hidden; /* управляем скроллом контейнером */
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      /* Scroll-snap container */
+      .snap-wrapper {
+        height: 100vh;
+        overflow-y: scroll;
+        scroll-snap-type: y mandatory;
+        scroll-behavior: smooth;
+      }
+
+      section {
+        min-height: 100vh;
+        scroll-snap-align: start;
+        padding: 1.5rem clamp(1.5rem, 5vw, 4rem) 2.5rem;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Top bar */
+      .top-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.85rem;
+      }
+
+      .logo-mark {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        font-size: 0.8rem;
+      }
+
+      .logo-dot {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: conic-gradient(
+          from 140deg,
+          #ff6fd8,
+          #3813c2,
+          #00f5a0,
+          #ff6fd8
+        );
+        box-shadow: 0 0 18px rgba(255, 111, 216, 0.7);
+      }
+
+      .top-nav {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+      }
+
+      .top-nav a {
+        padding-bottom: 0.2rem;
+        border-bottom: 1px solid transparent;
+      }
+
+      .top-nav a:hover {
+        border-bottom-color: rgba(255, 255, 255, 0.7);
+      }
+
+      /* Hero */
+      .hero-inner {
+        flex: 1;
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) minmax(260px, 1fr);
+        gap: clamp(2rem, 6vw, 3rem);
+        align-items: center;
+      }
+
+      .eyebrow {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        color: var(--text-muted);
+        margin-bottom: 0.75rem;
+      }
+
+      .hero-title {
+        font-family: "Syne", system-ui, sans-serif;
+        font-size: clamp(2.4rem, 4vw, 3.6rem);
+        line-height: 1.05;
+      }
+
+      .hero-title span {
+        background: linear-gradient(120deg, #ff6fd8, #ffc464, #00f5a0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero-text {
+        margin-top: 1.3rem;
+        max-width: 32rem;
+        font-size: 0.98rem;
+        color: var(--text-muted);
+      }
+
+      .hero-cta-row {
+        margin-top: 1.8rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.9rem;
+      }
+
+      .btn-primary {
+        padding: 0.85rem 1.6rem;
+        border-radius: 999px;
+        background: linear-gradient(120deg, #ff6fd8, #3813c2);
+        border: none;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.75);
+      }
+
+      .btn-ghost {
+        padding: 0.8rem 1.4rem;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: var(--text-muted);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+      }
+
+      .hero-meta {
+        margin-top: 1.8rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.8rem;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+      }
+
+      .hero-meta span {
+        display: block;
+      }
+
+      .hero-card {
+        background: radial-gradient(
+            circle at top left,
+            rgba(255, 111, 216, 0.25),
+            transparent 55%
+          ),
+          radial-gradient(
+            circle at bottom right,
+            rgba(0, 245, 160, 0.25),
+            transparent 55%
+          ),
+          var(--bg-card);
+        border-radius: 24px;
+        padding: 1.3rem 1.3rem 1.4rem;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .hero-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.78rem;
+      }
+
+      .hero-chip {
+        padding: 0.25rem 0.7rem;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        font-size: 0.7rem;
+      }
+
+      .hero-card-title {
+        font-size: 0.98rem;
+        font-weight: 600;
+      }
+
+      .hero-card-text {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+
+      .hero-card-tags {
+        margin-top: 0.4rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+        font-size: 0.7rem;
+        color: var(--text-muted);
+      }
+
+      .hero-dot-row {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.3rem;
+        margin-top: 0.4rem;
+      }
+
+      .hero-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.48);
+      }
+
+      /* Cards section */
+      .section-header {
+        margin-bottom: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 1.5rem;
+      }
+
+      .section-title {
+        font-family: "Syne", system-ui, sans-serif;
+        font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+        text-transform: uppercase;
+      }
+
+      .section-kicker {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: var(--text-muted);
+      }
+
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 1.4rem;
+      }
+
+      .work-card {
+        background: var(--bg-card);
+        border-radius: 22px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-height: 260px;
+        transition: transform 0.18s ease, box-shadow 0.18s ease,
+          border-color 0.18s ease;
+      }
+
+      .work-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.75);
+        border-color: rgba(255, 255, 255, 0.26);
+      }
+
+      .work-media {
+        aspect-ratio: 4 / 3;
+        background-size: cover;
+        background-position: center;
+        filter: saturate(1.2) contrast(1.05);
+      }
+
+      .work-body {
+        padding: 0.85rem 0.95rem 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+
+      .work-meta {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: var(--text-muted);
+      }
+
+      .work-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+
+      .work-desc {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+
+      /* Contact */
+      .contact-inner {
+        flex: 1;
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) minmax(260px, 1fr);
+        gap: clamp(1.8rem, 5vw, 2.4rem);
+        align-items: center;
+      }
+
+      .contact-text {
+        max-width: 30rem;
+        font-size: 0.96rem;
+        color: var(--text-muted);
+      }
+
+      .contact-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+        font-size: 0.8rem;
+      }
+
+      .contact-label {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: var(--text-muted);
+      }
+
+      .contact-link {
+        display: inline-block;
+        border-bottom: 1px solid transparent;
+      }
+
+      .contact-link:hover {
+        border-bottom-color: rgba(255, 255, 255, 0.7);
+      }
+
+      .contact-pill {
+        margin-top: 1.2rem;
+        padding: 0.7rem 1.2rem;
+        border-radius: 999px;
+        border: 1px dashed rgba(255, 255, 255, 0.4);
+        font-size: 0.75rem;
+        color: var(--text-muted);
+      }
+
+      /* Responsive */
+      @media (max-width: 900px) {
+        .hero-inner,
+        .contact-inner {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-card {
+          max-width: 360px;
+          margin-left: auto;
+        }
+      }
+
+      @media (max-width: 720px) {
+        body {
+          overflow: auto;
+        }
+
+        .snap-wrapper {
+          height: auto;
+          overflow-y: visible;
+          scroll-snap-type: none;
+        }
+
+        section {
+          min-height: auto;
+        }
+
+        .top-bar {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .cards-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="snap-wrapper">
+      <!-- HERO -->
+      <section id="top">
+        <header class="top-bar">
+          <div class="logo-mark">
+            <span class="logo-dot"></span>
+            <span>Prism Lab</span>
+          </div>
+          <nav class="top-nav">
+            <a href="#top">Intro</a>
+            <a href="#work">Work</a>
+            <a href="#contact">Contact</a>
+          </nav>
+        </header>
+
+        <div class="hero-inner">
+          <div>
+            <div class="eyebrow">Creative coding portfolio</div>
+            <h1 class="hero-title">
+              Small, vivid pages<br />
+              for <span>experimental</span> work.
+            </h1>
+            <p class="hero-text">
+              Prism Lab designs tiny, focused web experiences that showcase
+              generative visuals, interactive sketches and code‑driven
+              identities in a few carefully crafted screens.
+            </p>
+            <div class="hero-cta-row">
+              <button
+                class="btn-primary"
+                onclick="document.querySelector('#work').scrollIntoView({behavior:'smooth'})"
+              >
+                View cards <span>↳</span>
+              </button>
+              <button
+                class="btn-ghost"
+                onclick="document.querySelector('#contact').scrollIntoView({behavior:'smooth'})"
+              >
+                Let’s talk
+              </button>
+            </div>
+            <div class="hero-meta">
+              <div>
+                <span>Focus</span>
+                <span
+                  >Generative visuals, one‑page sites, interactive demos.</span
+                >
+              </div>
+              <div>
+                <span>Stack</span>
+                <span>HTML · CSS · JS · WebGL experiments.</span>
+              </div>
+            </div>
+          </div>
+
+          <aside class="hero-card">
+            <div class="hero-card-header">
+              <span class="hero-chip">Snapshot</span>
+              <span style="font-size: 0.75rem; color: var(--text-muted)"
+                >2025 · Ongoing</span
+              >
+            </div>
+            <div class="hero-card-title">Micro‑gallery of live sketches</div>
+            <p class="hero-card-text">
+              A rotating set of one‑screen experiments built for quick sharing
+              with clients and collaborators.
+            </p>
+            <div class="hero-card-tags">
+              <span>#scroll‑snap</span>
+              <span>#hover‑states</span>
+              <span>#gradient‑systems</span>
+            </div>
+            <div class="hero-dot-row">
+              <span class="hero-dot"></span>
+              <span class="hero-dot"></span>
+              <span class="hero-dot"></span>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- WORK CARDS -->
+      <section id="work">
+        <div class="section-header">
+          <h2 class="section-title">Selected cards</h2>
+          <div class="section-kicker">Scroll or drag to explore</div>
+        </div>
+
+        <div class="cards-grid">
+          <article class="work-card">
+            <div
+              class="work-media"
+              style="
+                background-image: url('https://images.unsplash.com/photo-1529243856184-fd5465488984?auto=format&w=1000&fit=crop');
+              "
+            ></div>
+            <div class="work-body">
+              <div class="work-meta">Loop · Web sketch</div>
+              <div class="work-title">Orbital Trails</div>
+              <p class="work-desc">
+                Circular motion trails reacting to pointer velocity, rendered
+                with soft glows.
+              </p>
+            </div>
+          </article>
+
+          <article class="work-card">
+            <div
+              class="work-media"
+              style="
+                background-image: url('https://images.unsplash.com/photo-1703543990845-9db7c7b349ce?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8U2lnbmFsJTIwQmxvY2tzfGVufDB8fDB8fHww');
+              "
+            ></div>
+            <div class="work-body">
+              <div class="work-meta">Study · Grid system</div>
+              <div class="work-title">Signal Blocks</div>
+              <p class="work-desc">
+                Abstract blocks that shuffle positions based on live data
+                inputs.
+              </p>
+            </div>
+          </article>
+
+          <article class="work-card">
+            <div
+              class="work-media"
+              style="
+                background-image: url('https://images.unsplash.com/photo-1624344965182-f659bb1f510a?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Q2hyb21hdGljJTIwTm9pc2V8ZW58MHx8MHx8fDA%3D');
+              "
+            ></div>
+            <div class="work-body">
+              <div class="work-meta">Prototype · Gallery</div>
+              <div class="work-title">Chromatic Noise</div>
+              <p class="work-desc">
+                Color‑driven noise fields for digital wall displays and
+                projections.
+              </p>
+            </div>
+          </article>
+
+          <article class="work-card">
+            <div
+              class="work-media"
+              style="
+                background-image: url('https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&w=1000&fit=crop');
+              "
+            ></div>
+            <div class="work-body">
+              <div class="work-meta">Visual · Identity</div>
+              <div class="work-title">Spectrum Lines</div>
+              <p class="work-desc">
+                Branded gradient lines for motion pieces and social snippets.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- CONTACT -->
+      <section id="contact">
+    <div class="section-header">
+        <h2 class="section-title">Collaborations</h2>
+        <div class="section-kicker">Studios · galleries · dev teams</div>
+    </div>
+
+    <div class="contact-inner">
+        <div>
+            <p class="contact-text">
+                Prism Lab joins forces with studios, galleries and development teams to craft
+                small but memorable interfaces: launch microsites, generative posters, live visuals
+                for events and code‑driven identity systems.
+            </p>
+            <p class="contact-text" style="margin-top: 1rem;">
+                Collaboration can look like art direction for a single page, building a library
+                of reusable sketches for your brand, or pairing with your in‑house devs to prototype
+                experimental UI concepts.
+            </p>
+            <div class="contact-pill">
+                Open to short sprints and longer partnerships · Remote‑first, async friendly
+            </div>
+        </div>
+
+        <div class="contact-list">
+            <div>
+                <div class="contact-label">Email</div>
+                <a href="mailto:hello@prismlab.studio" class="contact-link">hello@prismlab.studio</a>
+            </div>
+            <div>
+                <div class="contact-label">Potential projects</div>
+                <span>One‑page launches, interactive galleries, live visuals, generative brand assets.</span>
+            </div>
+            <div>
+                <div class="contact-label">Social</div>
+                <a href="#" class="contact-link">@prismlab.codes</a>
+            </div>
+            <div>
+                <div class="contact-label">Location</div>
+                <span>Based in Colorado · Available worldwide</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+    </div>
+  </body>
+</html>
